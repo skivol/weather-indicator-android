@@ -10,7 +10,6 @@ androidExtensions {
 android {
     compileSdkVersion 27
     defaultConfig {
-        // TODO add a good README file with links to different frameworks used in the project, describe functionality implemented
         applicationId "ua.skachkov.temperature.myapplication"
         minSdkVersion 19
         targetSdkVersion 27
