@@ -10,49 +10,49 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import ua.skachkov.temperature.myapplication.DateProvider
-import ua.skachkov.temperature.myapplication.R
-import ua.skachkov.temperature.myapplication.TemperatureLoadService
-import ua.skachkov.temperature.myapplication.app
-import ua.skachkov.temperature.myapplication.constants.TEMPERATURE_LOADED_BROADCAST
-import ua.skachkov.temperature.myapplication.constants.TEMPERATURE_STARTED_LOADING_BROADCAST
-import ua.skachkov.temperature.myapplication.data.TemperatureData
-import ua.skachkov.temperature.myapplication.di.defaultTemperatureLoadingPeriod
-import ua.skachkov.temperature.myapplication.preferences.SettingsActivity
-import ua.skachkov.temperature.myapplication.service.TemperatureUpdatedBroadcastReceiver
-import ua.skachkov.temperature.myapplication.service.UpdateTemperatureService
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
+import ua.skachkov.temperature.myapplication.DateProvider
+import ua.skachkov.temperature.myapplication.MeasurementsLoadService
+import ua.skachkov.temperature.myapplication.R
+import ua.skachkov.temperature.myapplication.app
+import ua.skachkov.temperature.myapplication.constants.MEASUREMENTS_LOADED_BROADCAST
+import ua.skachkov.temperature.myapplication.constants.MEASUREMENTS_STARTED_LOADING_BROADCAST
+import ua.skachkov.temperature.myapplication.data.WeatherData
+import ua.skachkov.temperature.myapplication.di.defaultMeasurementsLoadingPeriod
+import ua.skachkov.temperature.myapplication.preferences.SettingsActivity
+import ua.skachkov.temperature.myapplication.service.MeasurementsUpdatedBroadcastReceiver
+import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsService
 import java.util.*
 import javax.inject.Inject
 
-fun registerTemperatureLoadedBroadcastReceiver(context: Context, temperatureUpdatedBroadcastReceiver: TemperatureUpdatedBroadcastReceiver) {
+fun registerMeasurementsLoadedBroadcastReceiver(context: Context, measurementsUpdatedBroadcastReceiver: MeasurementsUpdatedBroadcastReceiver) {
     val localBroadcastManager = LocalBroadcastManager.getInstance(context)
 
-    val temperatureStartedLoadingIntentFilter = IntentFilter(TEMPERATURE_STARTED_LOADING_BROADCAST)
-    localBroadcastManager.registerReceiver(temperatureUpdatedBroadcastReceiver, temperatureStartedLoadingIntentFilter)
+    val measurementsStartedLoadingIntentFilter = IntentFilter(MEASUREMENTS_STARTED_LOADING_BROADCAST)
+    localBroadcastManager.registerReceiver(measurementsUpdatedBroadcastReceiver, measurementsStartedLoadingIntentFilter)
 
-    val temperatureLoadedIntentFilter = IntentFilter(TEMPERATURE_LOADED_BROADCAST)
-    localBroadcastManager.registerReceiver(temperatureUpdatedBroadcastReceiver, temperatureLoadedIntentFilter)
+    val temperatureLoadedIntentFilter = IntentFilter(MEASUREMENTS_LOADED_BROADCAST)
+    localBroadcastManager.registerReceiver(measurementsUpdatedBroadcastReceiver, temperatureLoadedIntentFilter)
 }
 
-fun unregisterLocalReceiver(context: Context, receiver: TemperatureUpdatedBroadcastReceiver) {
+fun unregisterLocalReceiver(context: Context, receiver: MeasurementsUpdatedBroadcastReceiver) {
     LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
 }
 
-class TemperatureActivity() : AppCompatActivity() {
+class WeatherMeasurementsActivity() : AppCompatActivity() {
     @Inject
-    lateinit var ui: TemperatureActivityUI
+    lateinit var ui: WeatherMeasurementsActivityUI
     @Inject
     lateinit var dateProvider: DateProvider
     @Inject
-    lateinit var temperatureLoadService: TemperatureLoadService
+    lateinit var weatherMeasurementsLoadService: MeasurementsLoadService
 
     private var timer: Timer? = null
 
-    private val temperatureUpdateListener = TemperatureUpdatedBroadcastReceiver(
-            { ui.onTemperatureStartedLoading() },
-            { ui.onTemperatureLoaded(it) }
+    private val measurementsUpdateListener = MeasurementsUpdatedBroadcastReceiver(
+            { ui.onMeasurementsStartedLoading() },
+            { ui.onMeasurementsLoaded(it) }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +65,7 @@ class TemperatureActivity() : AppCompatActivity() {
 
         ui.setContentView(this)
 
-        registerTemperatureLoadedBroadcastReceiver(this, temperatureUpdateListener)
+        registerMeasurementsLoadedBroadcastReceiver(this, measurementsUpdateListener)
     }
 
     override fun onResume() {
@@ -75,15 +75,15 @@ class TemperatureActivity() : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        cancelTemperatureUpdate()
+        cancelMeasurementsUpdate()
     }
 
     private fun scheduleTemperatureUpdate() {
         // If using the service
-        // val loadTemperatureIntent = Intent(this, UpdateTemperatureService::class.java)
+        // val loadTemperatureIntent = Intent(this, UpdateWeatherMeasurementsService::class.java)
         // startService(loadTemperatureIntent)
         timer = Timer()
-        timer!!.scheduleAtFixedRate(createTimerTask(), 0, defaultTemperatureLoadingPeriod)
+        timer!!.scheduleAtFixedRate(createTimerTask(), 0, defaultMeasurementsLoadingPeriod)
     }
 
     private fun createTimerTask(): TimerTask {
@@ -95,18 +95,18 @@ class TemperatureActivity() : AppCompatActivity() {
         }
     }
 
-    private fun createTemperatureLoadingTask(): AsyncTask<Void, Unit, TemperatureData> {
-        return object : AsyncTask<Void, Unit, TemperatureData>() {
+    private fun createTemperatureLoadingTask(): AsyncTask<Void, Unit, WeatherData> {
+        return object : AsyncTask<Void, Unit, WeatherData>() {
             override fun onPreExecute() {
-                ui.onTemperatureStartedLoading()
+                ui.onMeasurementsStartedLoading()
             }
 
-            override fun doInBackground(vararg params: Void?): TemperatureData {
-                return UpdateTemperatureService.loadTemperatureData(dateProvider, temperatureLoadService)
+            override fun doInBackground(vararg params: Void?): WeatherData {
+                return UpdateWeatherMeasurementsService.loadWeatherData(dateProvider, weatherMeasurementsLoadService)
             }
 
-            override fun onPostExecute(result: TemperatureData) {
-                ui.onTemperatureLoaded(result)
+            override fun onPostExecute(result: WeatherData) {
+                ui.onMeasurementsLoaded(result)
             }
         }
     }
@@ -130,11 +130,11 @@ class TemperatureActivity() : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelTemperatureUpdate()
-        unregisterLocalReceiver(this, temperatureUpdateListener)
+        cancelMeasurementsUpdate()
+        unregisterLocalReceiver(this, measurementsUpdateListener)
     }
 
-    private fun cancelTemperatureUpdate() {
+    private fun cancelMeasurementsUpdate() {
         timer?.cancel()
         timer = null
     }

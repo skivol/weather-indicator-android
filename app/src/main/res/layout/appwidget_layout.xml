@@ -11,13 +11,13 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/temperature_text"
+        android:id="@+id/measurements_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textColor="#FFF"
         android:textSize="16sp"
-        tools:text="Temperature" />
+        tools:text="Measurements" />
     <!-- TODO Adjust the size of message. With "error message" android:textSize="24sp" is too much. Checkout "Autosizing TextViews" -->
 
     <LinearLayout

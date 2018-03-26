@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.TemperatureActivity">
+        <activity android:name=".activity.WeatherMeasurementsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,13 +25,13 @@
             android:parentActivityName=".preferences.SettingsActivity" />
 
         <service
-            android:name=".service.UpdateTemperatureService"
+            android:name=".service.UpdateWeatherMeasurementsService"
             android:exported="false" />
         <service
-            android:name=".widget.UpdateTempWidgetService"
+            android:name=".widget.UpdateWeatherMeasurementsWidgetService"
             android:exported="false" />
 
-        <receiver android:name=".widget.TemperatureAppWidgetProvider">
+        <receiver android:name=".widget.WeatherMeasurementsAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

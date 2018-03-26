@@ -7,7 +7,7 @@ import ua.skachkov.temperature.myapplication.data.ConfigData
 import dagger.Module
 import dagger.Provides
 
-const val defaultTemperatureLoadingPeriod = 60L * 1000
+const val defaultMeasurementsLoadingPeriod = 60L * 1000
 const val defaultTemperatureLoadingTimeout = 30L
 
 /**

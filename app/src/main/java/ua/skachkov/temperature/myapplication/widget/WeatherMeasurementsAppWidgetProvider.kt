@@ -12,31 +12,31 @@ import android.os.IBinder
 import android.view.View
 import android.widget.RemoteViews
 import ua.skachkov.temperature.myapplication.R
-import ua.skachkov.temperature.myapplication.activity.TemperatureActivity
-import ua.skachkov.temperature.myapplication.activity.registerTemperatureLoadedBroadcastReceiver
+import ua.skachkov.temperature.myapplication.activity.WeatherMeasurementsActivity
+import ua.skachkov.temperature.myapplication.activity.registerMeasurementsLoadedBroadcastReceiver
 import ua.skachkov.temperature.myapplication.activity.unregisterLocalReceiver
-import ua.skachkov.temperature.myapplication.service.TemperatureUpdatedBroadcastReceiver
-import ua.skachkov.temperature.myapplication.service.UpdateTemperatureService
+import ua.skachkov.temperature.myapplication.service.MeasurementsUpdatedBroadcastReceiver
+import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsService
 
 /**
  * @author Ivan Skachkov
  * Created on 3/13/2018.
  */
-class TemperatureAppWidgetProvider : AppWidgetProvider() {
+class WeatherMeasurementsAppWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         // TODO Optimize networking (save loaded data: cache/db?, avoid excessive requests etc)
-        context?.startService(Intent(context, UpdateTempWidgetService::class.java))
+        context?.startService(Intent(context, UpdateWeatherMeasurementsWidgetService::class.java))
     }
 }
 
-class UpdateTempWidgetService : Service() {
+class UpdateWeatherMeasurementsWidgetService : Service() {
     private val binder = Binder()
 
     override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 
-    private val temperatureUpdateListener = TemperatureUpdatedBroadcastReceiver(
+    private val measurementsUpdateListener = MeasurementsUpdatedBroadcastReceiver(
             {
                 val views = createAppWidgetRemoteViews()
                 views.setViewVisibility(R.id.load_progressbar, View.VISIBLE)
@@ -50,13 +50,13 @@ class UpdateTempWidgetService : Service() {
                 remoteViews.setTextViewText(R.id.date_text, it.syncDate)
                 remoteViews.setViewVisibility(R.id.load_progressbar, View.GONE)
 
-                val intent = Intent(this, TemperatureActivity::class.java)
+                val intent = Intent(this, WeatherMeasurementsActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-                remoteViews.setOnClickPendingIntent(R.id.temperature_text, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.measurements_text, pendingIntent)
 
-                remoteViews.setTextViewText(R.id.temperature_text, it.temperatureOrStatusIfError)
+                remoteViews.setTextViewText(R.id.measurements_text, it.formattedWeatherMeasurementsOrStatusIfError)
 
-                val refreshIntent = Intent(this, UpdateTempWidgetService::class.java)
+                val refreshIntent = Intent(this, UpdateWeatherMeasurementsWidgetService::class.java)
                 val pendingRefreshIntent = PendingIntent.getService(this, 0, refreshIntent, 0)
                 remoteViews.setOnClickPendingIntent(R.id.refresh_button, pendingRefreshIntent)
 
@@ -65,16 +65,10 @@ class UpdateTempWidgetService : Service() {
             })
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        registerTemperatureLoadedBroadcastReceiver(this, temperatureUpdateListener)
+        registerMeasurementsLoadedBroadcastReceiver(this, measurementsUpdateListener)
 
-        val serviceIntent = Intent(this, UpdateTemperatureService::class.java)
+        val serviceIntent = Intent(this, UpdateWeatherMeasurementsService::class.java)
         startService(serviceIntent)
-
-        // Option to run the loading periodically (can potentially drain the battery)
-        /* val pendingServiceIntent = PendingIntent.getService(this, 0, serviceIntent, 0)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingServiceIntent)
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), defaultTemperatureLoadingPeriod, pendingServiceIntent) */
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -82,13 +76,13 @@ class UpdateTempWidgetService : Service() {
     private fun createAppWidgetRemoteViews() = RemoteViews(packageName, R.layout.appwidget_layout)
 
     private fun updateWidgets(remoteViews: RemoteViews) {
-        val thisWidget = ComponentName(this, TemperatureAppWidgetProvider::class.java)
+        val thisWidget = ComponentName(this, WeatherMeasurementsAppWidgetProvider::class.java)
         val appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetManager.updateAppWidget(thisWidget, remoteViews)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterLocalReceiver(this, temperatureUpdateListener)
+        unregisterLocalReceiver(this, measurementsUpdateListener)
     }
 }

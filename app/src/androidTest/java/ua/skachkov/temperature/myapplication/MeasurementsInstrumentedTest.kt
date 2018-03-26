@@ -4,7 +4,6 @@ import android.content.Intent
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withId
@@ -12,8 +11,8 @@ import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import ua.skachkov.temperature.myapplication.activity.TEMPERATURE_MESSAGE_ID
-import ua.skachkov.temperature.myapplication.activity.TemperatureActivity
+import ua.skachkov.temperature.myapplication.activity.MEASUREMENTS_MESSAGE_ID
+import ua.skachkov.temperature.myapplication.activity.WeatherMeasurementsActivity
 import ua.skachkov.temperature.myapplication.data.ConfigData
 import ua.skachkov.temperature.myapplication.preferences.kotlinInfoTextViewId
 import okhttp3.mockwebserver.MockResponse
@@ -28,17 +27,18 @@ import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class TemperatureInstrumentedTest {
+class MeasurementsInstrumentedTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(TemperatureActivity::class.java, false, false)
+    val activityRule = ActivityTestRule(WeatherMeasurementsActivity::class.java, false, false)
 
     @Inject
     lateinit var mockConfigModule: MockConfigModule
 
     private lateinit var mockWebServer: MockWebServer
 
-    private val defaultTemperatureValue = -4.0
+    private val defaultTemperature = -4.0
+    private val defaultHumidity = 50.5
 
     @Before
     fun setUp() {
@@ -48,7 +48,7 @@ class TemperatureInstrumentedTest {
         mockAppComponent.inject(this)
 
         mockWebServer = setupMockServer()
-        mockTemperatureResponse(defaultTemperatureValue)
+        mockTemperatureResponse(defaultTemperature, defaultHumidity)
         mockConfigModule.configData = ConfigData(mockWebServer.url("/").toString())
 
         activityRule.launchActivity(Intent())
@@ -57,7 +57,7 @@ class TemperatureInstrumentedTest {
     @Test
     fun temperatureMessage() {
         // Verify
-        onView(withId(TEMPERATURE_MESSAGE_ID)).check(matches(withText("${defaultTemperatureValue}°")))
+        onView(withId(MEASUREMENTS_MESSAGE_ID)).check(matches(withText("t: ${defaultTemperature}°, Rh: ${defaultHumidity}")))
     }
 
     @Test
@@ -79,13 +79,13 @@ class TemperatureInstrumentedTest {
 
     private fun setupMockServer() = MockWebServer()
 
-    private fun mockTemperatureResponse(temperatureValue: Double) {
+    private fun mockTemperatureResponse(temperatureValue: Double, humidity: Double) {
         // https://android-arsenal.com/details/1/3397
         mockWebServer.enqueue(
                 MockResponse()
                         .setHeader("ContentType", "application/json")
                         .setHeadersDelay(2, TimeUnit.SECONDS)
-                        .setBody("{ 'Temperature': $temperatureValue }")
+                        .setBody("{ 'Temperature': $temperatureValue, 'Humidity': $humidity }")
                         .setBodyDelay(2, TimeUnit.SECONDS)
         )
     }

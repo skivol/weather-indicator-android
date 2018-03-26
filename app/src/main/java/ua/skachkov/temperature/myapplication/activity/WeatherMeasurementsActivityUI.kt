@@ -1,28 +1,27 @@
 package ua.skachkov.temperature.myapplication.activity
 
 import android.support.constraint.ConstraintSet.PARENT_ID
-import android.support.v7.appcompat.R
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import ua.skachkov.temperature.myapplication.data.TemperatureData
+import ua.skachkov.temperature.myapplication.data.WeatherData
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.ConstraintSetBuilder.Side.*
 import org.jetbrains.anko.constraint.layout.applyConstraintSet
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import javax.inject.Inject
 
-const val TEMPERATURE_MESSAGE_ID = 2
+const val MEASUREMENTS_MESSAGE_ID = 2
 const val LOAD_INDICATOR_ID = 3
 const val SYNC_DATE_ID = 4
 
-class TemperatureActivityUI @Inject constructor() : AnkoComponent<TemperatureActivity> {
-    private lateinit var ankoContext: AnkoContext<TemperatureActivity>
+class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<WeatherMeasurementsActivity> {
+    private lateinit var ankoContext: AnkoContext<WeatherMeasurementsActivity>
     private lateinit var loadIndicator: ProgressBar
     private lateinit var temperatureOrMessage: TextView
     private lateinit var loadDate: TextView
 
-    override fun createView(ui: AnkoContext<TemperatureActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<WeatherMeasurementsActivity>) = with(ui) {
         ankoContext = ui
         // https://developer.android.com/reference/android/support/constraint/ConstraintLayout.html
         constraintLayout {
@@ -30,7 +29,7 @@ class TemperatureActivityUI @Inject constructor() : AnkoComponent<TemperatureAct
                     id = LOAD_INDICATOR_ID
             } /* https://stackoverflow.com/a/13046535 */
             temperatureOrMessage = textView {
-                id = TEMPERATURE_MESSAGE_ID
+                id = MEASUREMENTS_MESSAGE_ID
                 textSize = 24f
             }
             loadDate = textView {
@@ -71,7 +70,7 @@ class TemperatureActivityUI @Inject constructor() : AnkoComponent<TemperatureAct
         }
     }
 
-    fun onTemperatureStartedLoading() {
+    fun onMeasurementsStartedLoading() {
         ankoContext.doAsync {
             activityUiThread {
                 loadIndicator.visibility = View.VISIBLE
@@ -79,11 +78,11 @@ class TemperatureActivityUI @Inject constructor() : AnkoComponent<TemperatureAct
         }
     }
 
-    fun onTemperatureLoaded(temperatureData: TemperatureData) {
+    fun onMeasurementsLoaded(weatherData: WeatherData) {
         ankoContext.doAsync {
             activityUiThread {
-                temperatureOrMessage.text = temperatureData.temperatureOrStatusIfError
-                loadDate.text = temperatureData.syncDate
+                temperatureOrMessage.text = weatherData.formattedWeatherMeasurementsOrStatusIfError
+                loadDate.text = weatherData.syncDate
 
                 loadIndicator.visibility = View.GONE
                 temperatureOrMessage.visibility = View.VISIBLE
