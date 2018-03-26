@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/network_settings_title">
+        <EditTextPreference
+            android:defaultValue="@string/default_temperature_url"
+            android:inputType="textUri"
+            android:key="@string/pref_temperature_url_key"
+            android:title="@string/pref_temperature_url_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/about_app_title">
+        <Preference android:title="@string/about_technologies_used">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="ua.skachkov.temperature.myapplication"
+                android:targetClass="ua.skachkov.temperature.myapplication.preferences.AboutActivity" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

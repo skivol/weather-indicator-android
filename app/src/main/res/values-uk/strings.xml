@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Температура</string>
+    <string name="no_data_available">Дані не доступні</string>
+    <string name="no_network">Немає підключення</string>
+    <string name="network_settings_title">Мережа</string>
+    <string name="pref_temperature_url_title">Адреса датчика</string>
+    <string name="pref_menu_title">Налаштування</string>
+    <string name="about_app_title">Про додаток</string>
+    <string name="about_technologies_used">Технології</string>
+    <string name="refresh_button_text">Оновити</string>
+</resources>

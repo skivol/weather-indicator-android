@@ -1,18 +1,23 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+androidExtensions {
+    experimental = true
+}
+
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.vania.myapplication"
-        minSdkVersion 17
-        targetSdkVersion 26
+        // TODO add a good README file with links to different frameworks used in the project, describe functionality implemented
+        applicationId "ua.skachkov.temperature.myapplication"
+        minSdkVersion 19
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "ua.skachkov.temperature.myapplication.MockTestRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -24,10 +29,35 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Kotlin
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    // Android
+    implementation "com.android.support:appcompat-v7:$compat_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
+    // Anko
+    compile "org.jetbrains.anko:anko:$anko_version"
+    compile "org.jetbrains.anko:anko-constraint-layout:$anko_version"
+    // Dagger 2
+    // TODO checkout Koin https://github.com/Ekito/koin
+    compile "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    androidTestCompile "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+
+    // Tests
+    testCompile "junit:junit:$junit_version"
+    // Mockito framework
+//    androidTestCompile "org.mockito:mockito-android:$mockito_version"
+    // Test Dagger 2
+    androidTestCompile "com.google.dagger:dagger:$dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+
+    androidTestCompile 'com.android.support:support-annotations:27.1.0'
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
+    androidTestCompile ("com.android.support.test.espresso:espresso-core:$espresso_version", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:$espresso_version"
 }
