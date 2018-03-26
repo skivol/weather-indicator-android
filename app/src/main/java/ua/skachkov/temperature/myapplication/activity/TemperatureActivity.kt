@@ -1,14 +1,12 @@
 package ua.skachkov.temperature.myapplication.activity
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -18,7 +16,6 @@ import ua.skachkov.temperature.myapplication.TemperatureLoadService
 import ua.skachkov.temperature.myapplication.app
 import ua.skachkov.temperature.myapplication.constants.TEMPERATURE_LOADED_BROADCAST
 import ua.skachkov.temperature.myapplication.constants.TEMPERATURE_STARTED_LOADING_BROADCAST
-import ua.skachkov.temperature.myapplication.data.ConfigData
 import ua.skachkov.temperature.myapplication.data.TemperatureData
 import ua.skachkov.temperature.myapplication.di.defaultTemperatureLoadingPeriod
 import ua.skachkov.temperature.myapplication.preferences.SettingsActivity
@@ -51,7 +48,8 @@ class TemperatureActivity() : AppCompatActivity() {
     @Inject
     lateinit var temperatureLoadService: TemperatureLoadService
 
-    private val timer = Timer()
+    private var timer: Timer? = null
+
     private val temperatureUpdateListener = TemperatureUpdatedBroadcastReceiver(
             { ui.onTemperatureStartedLoading() },
             { ui.onTemperatureLoaded(it) }
@@ -70,40 +68,47 @@ class TemperatureActivity() : AppCompatActivity() {
         registerTemperatureLoadedBroadcastReceiver(this, temperatureUpdateListener)
     }
 
-    override fun onPause() {
-        super.onPause()
-        cancelTemperatureUpdate()
-    }
-
     override fun onResume() {
         super.onResume()
         scheduleTemperatureUpdate()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cancelTemperatureUpdate()
     }
 
     private fun scheduleTemperatureUpdate() {
         // If using the service
         // val loadTemperatureIntent = Intent(this, UpdateTemperatureService::class.java)
         // startService(loadTemperatureIntent)
-        timer.scheduleAtFixedRate(object : TimerTask() {
+        timer = Timer()
+        timer!!.scheduleAtFixedRate(createTimerTask(), 0, defaultTemperatureLoadingPeriod)
+    }
+
+    private fun createTimerTask(): TimerTask {
+        return object : TimerTask() {
             override fun run() {
-                Log.d("TemperatureActivity", "Temperature update...")
                 // Using AsyncTask in order for Espresso synchronization to work out of the box and simplify the functionality
-                val loadTempTask = object : AsyncTask<Void, Unit, TemperatureData>() {
-                    override fun onPreExecute() {
-                        ui.onTemperatureStartedLoading()
-                    }
-
-                    override fun doInBackground(vararg params: Void?): TemperatureData {
-                        return UpdateTemperatureService.loadTemperatureData(dateProvider, temperatureLoadService)
-                    }
-
-                    override fun onPostExecute(result: TemperatureData) {
-                        ui.onTemperatureLoaded(result)
-                    }
-                }
-                loadTempTask.execute()
+                createTemperatureLoadingTask().execute()
             }
-        }, 0, defaultTemperatureLoadingPeriod)
+        }
+    }
+
+    private fun createTemperatureLoadingTask(): AsyncTask<Void, Unit, TemperatureData> {
+        return object : AsyncTask<Void, Unit, TemperatureData>() {
+            override fun onPreExecute() {
+                ui.onTemperatureStartedLoading()
+            }
+
+            override fun doInBackground(vararg params: Void?): TemperatureData {
+                return UpdateTemperatureService.loadTemperatureData(dateProvider, temperatureLoadService)
+            }
+
+            override fun onPostExecute(result: TemperatureData) {
+                ui.onTemperatureLoaded(result)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -130,7 +135,8 @@ class TemperatureActivity() : AppCompatActivity() {
     }
 
     private fun cancelTemperatureUpdate() {
-        timer.cancel()
+        timer?.cancel()
+        timer = null
     }
 }
 
