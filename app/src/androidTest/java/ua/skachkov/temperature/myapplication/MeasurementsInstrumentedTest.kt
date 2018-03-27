@@ -49,7 +49,7 @@ class MeasurementsInstrumentedTest {
 
         mockWebServer = setupMockServer()
         mockTemperatureResponse(defaultTemperature, defaultHumidity)
-        mockConfigModule.configData = ConfigData(mockWebServer.url("/").toString())
+        mockConfigModule.measurementsUrl = mockWebServer.url("/").toString()
 
         activityRule.launchActivity(Intent())
     }
@@ -84,9 +84,9 @@ class MeasurementsInstrumentedTest {
         mockWebServer.enqueue(
                 MockResponse()
                         .setHeader("ContentType", "application/json")
-                        .setHeadersDelay(2, TimeUnit.SECONDS)
-                        .setBody("{ 'Temperature': $temperatureValue, 'Humidity': $humidity }")
-                        .setBodyDelay(2, TimeUnit.SECONDS)
+                        .setHeadersDelay(1, TimeUnit.SECONDS)
+                        .setBody("""{ "Temperature": $temperatureValue, "Humidity": $humidity }""")
+                        .setBodyDelay(1, TimeUnit.SECONDS)
         )
     }
 }

@@ -2,10 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/network_settings_title">
         <EditTextPreference
-            android:defaultValue="@string/default_temperature_url"
+            android:defaultValue="@string/default_measurements_url"
             android:inputType="textUri"
-            android:key="@string/pref_temperature_url_key"
+            android:key="@string/pref_measurements_url_key"
             android:title="@string/pref_temperature_url_title" />
+        <EditTextPreference
+            android:defaultValue="@string/default_measurements_update_period_in_seconds"
+            android:inputType="number"
+            android:key="@string/pref_measurements_loading_period_in_seconds_key"
+            android:title="@string/pref_measurements_update_period" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/about_app_title">
         <Preference android:title="@string/about_technologies_used">

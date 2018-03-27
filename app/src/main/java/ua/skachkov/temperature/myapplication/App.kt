@@ -3,10 +3,7 @@ package ua.skachkov.temperature.myapplication
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import ua.skachkov.temperature.myapplication.di.AppComponent
-import ua.skachkov.temperature.myapplication.di.AppModule
-import ua.skachkov.temperature.myapplication.di.DaggerAppComponent
-import ua.skachkov.temperature.myapplication.di.NetworkModule
+import ua.skachkov.temperature.myapplication.di.*
 
 val Activity.app: App
     get() = application as App
@@ -22,6 +19,7 @@ open class App: Application() {
         DaggerAppComponent
                 .builder()
                 .appModule(AppModule(this))
+                .configModule(ConfigModule(this))
                 .build()
     }
 }

@@ -10,11 +10,13 @@ import org.jetbrains.anko.constraint.layout.ConstraintSetBuilder.Side.*
 import org.jetbrains.anko.constraint.layout.applyConstraintSet
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import javax.inject.Inject
+import javax.inject.Singleton
 
 const val MEASUREMENTS_MESSAGE_ID = 2
 const val LOAD_INDICATOR_ID = 3
 const val SYNC_DATE_ID = 4
 
+@Singleton
 class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<WeatherMeasurementsActivity> {
     private lateinit var ankoContext: AnkoContext<WeatherMeasurementsActivity>
     private lateinit var loadIndicator: ProgressBar

@@ -1,21 +1,25 @@
 package ua.skachkov.temperature.myapplication
 
-import ua.skachkov.temperature.myapplication.data.ConfigData
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import ua.skachkov.temperature.myapplication.data.ConfigData
+import ua.skachkov.temperature.myapplication.di.ConfigModule
 import javax.inject.Singleton
+
+const val defaultMeasurementsLoadingPeriodInSeconds = 60
 
 /**
  * @author Ivan Skachkov
  * Created on 3/22/2018.
  */
 @Module
-class MockConfigModule(var configData: ConfigData = ConfigData("localhost:8080")) {
-    @Provides
-    @Singleton
-    fun provideConfig() = configData
+class MockConfigModule(context: Context, var measurementsUrl: String = "localhost:8080") : ConfigModule(context) {
+    override fun provideConfigData(): ConfigData {
+        return ConfigData(measurementsUrl, defaultMeasurementsLoadingPeriodInSeconds)
+    }
 
     @Provides
     @Singleton
-    fun provideConfigModule() = this
+    fun provideMockConfigModule() = this
 }

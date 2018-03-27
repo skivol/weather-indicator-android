@@ -15,8 +15,12 @@ import ua.skachkov.temperature.myapplication.R
 import ua.skachkov.temperature.myapplication.activity.WeatherMeasurementsActivity
 import ua.skachkov.temperature.myapplication.activity.registerMeasurementsLoadedBroadcastReceiver
 import ua.skachkov.temperature.myapplication.activity.unregisterLocalReceiver
+import ua.skachkov.temperature.myapplication.app
+import ua.skachkov.temperature.myapplication.constants.MEASUREMENTS_URL_EXTRA
+import ua.skachkov.temperature.myapplication.di.ConfigModule
 import ua.skachkov.temperature.myapplication.service.MeasurementsUpdatedBroadcastReceiver
 import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsService
+import javax.inject.Inject
 
 /**
  * @author Ivan Skachkov
@@ -24,12 +28,14 @@ import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsSe
  */
 class WeatherMeasurementsAppWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
-        // TODO Optimize networking (save loaded data: cache/db?, avoid excessive requests etc)
         context?.startService(Intent(context, UpdateWeatherMeasurementsWidgetService::class.java))
     }
 }
 
 class UpdateWeatherMeasurementsWidgetService : Service() {
+    @Inject
+    lateinit var configModule: ConfigModule
+
     private val binder = Binder()
 
     override fun onBind(intent: Intent?): IBinder {
@@ -65,9 +71,11 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
             })
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        app.component.inject(this)
         registerMeasurementsLoadedBroadcastReceiver(this, measurementsUpdateListener)
 
         val serviceIntent = Intent(this, UpdateWeatherMeasurementsService::class.java)
+        serviceIntent.putExtra(MEASUREMENTS_URL_EXTRA, configModule.provideConfigData().measurementsUrl)
         startService(serviceIntent)
 
         return super.onStartCommand(intent, flags, startId)
@@ -82,7 +90,7 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         unregisterLocalReceiver(this, measurementsUpdateListener)
+        super.onDestroy()
     }
 }

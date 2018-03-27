@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="default_temperature_url" translatable="false">http://192.168.1.100</string>
-    <string name="pref_temperature_url_key" translatable="false">pref_temperature_url</string>
+    <string name="default_measurements_url" translatable="false">http://192.168.1.100</string>
+    <string name="default_measurements_update_period_in_seconds" translatable="false">60</string>
+    <string name="pref_measurements_url_key" translatable="false">pref_measurements_url</string>
+    <string name="pref_measurements_loading_period_in_seconds_key" translatable="false">pref_measurements_loading_period_in_seconds</string>
 </resources>

@@ -13,6 +13,5 @@ import java.util.concurrent.TimeUnit
 open class NetworkModule() {
     @Provides
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-            .connectTimeout(defaultTemperatureLoadingTimeout, TimeUnit.SECONDS)
             .build()
 }

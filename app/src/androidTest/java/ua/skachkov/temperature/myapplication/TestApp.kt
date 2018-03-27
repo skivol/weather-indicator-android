@@ -1,8 +1,6 @@
 package ua.skachkov.temperature.myapplication
 
-import ua.skachkov.temperature.myapplication.data.ConfigData
 import ua.skachkov.temperature.myapplication.di.AppModule
-import ua.skachkov.temperature.myapplication.di.NetworkModule
 
 
 /**
@@ -14,6 +12,7 @@ class TestApp() : App() {
         DaggerMockAppComponent
                 .builder()
                 .appModule(AppModule(this))
+                .mockConfigModule(MockConfigModule(this))
                 .build()
     }
 }

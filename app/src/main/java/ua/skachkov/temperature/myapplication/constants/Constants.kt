@@ -6,4 +6,5 @@ package ua.skachkov.temperature.myapplication.constants
  */
 const val MEASUREMENTS_STARTED_LOADING_BROADCAST = "ua.skachkov.temperature.MEASUREMENTS_STARTED_LOADING_BROADCAST"
 const val MEASUREMENTS_LOADED_BROADCAST = "ua.skachkov.temperature.MEASUREMENTS_LOADED_BROADCAST"
-const val TEMPERATURE_DATA = "ua.skachkov.temperature.TEMPERATURE_DATA"
+const val MEASUREMENTS_DATA = "ua.skachkov.temperature.MEASUREMENTS_DATA"
+const val MEASUREMENTS_URL_EXTRA = "ua.skachkov.weather.MEASUREMENTS_URL_EXTRA"
