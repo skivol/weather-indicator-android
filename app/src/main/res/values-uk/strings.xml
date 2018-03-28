@@ -11,4 +11,6 @@
     <string name="refresh_button_text">Оновити</string>
     <string name="pref_measurements_update_period">Період оновлення в секундах</string>
     <string name="pref_measurements_update_period_error">Повинен бути більше 5 секунд</string>
+    <string name="thermometer_icon_content_description">Іконка градусника</string>
+    <string name="humidity_icon_content_description">Іконка вологості</string>
 </resources>

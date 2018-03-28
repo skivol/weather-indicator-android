@@ -10,4 +10,6 @@
     <string name="about_app_title">About this app</string>
     <string name="about_technologies_used">Technologies</string>
     <string name="refresh_button_text">Refresh</string>
+    <string name="thermometer_icon_content_description">Thermometer icon</string>
+    <string name="humidity_icon_content_description">Humidity icon</string>
 </resources>

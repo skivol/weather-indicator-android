@@ -37,10 +37,10 @@ class NetworkMeasurementsLoader @Inject constructor(
         val noDataAvailable = context.getString(R.string.no_data_available)
         return try {
             val response = client.newCall(temperatureRequest).execute()
-            val temperatureString = response.body()?.string()
+            val temperatureString = response.body()?.string() ?: throw MeasurementsDataLoadException(noDataAvailable)
 
             val temperatureJson = JSONObject(temperatureString) // TODO consider using Retrofit or Volley
-            return NetworkWeatherMeasurements(
+            NetworkWeatherMeasurements(
                     temperatureJson.getDouble("Temperature").toString(),
                     temperatureJson.getDouble("Humidity").toString()
             )

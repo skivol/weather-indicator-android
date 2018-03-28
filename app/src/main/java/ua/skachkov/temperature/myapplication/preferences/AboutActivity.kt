@@ -21,7 +21,7 @@ class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // TODO create "Inspiring projects" to list useful examples
         // TODO create "Limitations" to list some of the limitations of current project
-        // TODO create "Helpful resources"
+        // TODO create "Helpful resources" (docs, icons etc)
         super.onCreate(savedInstanceState)
         verticalLayout {
             padding = 15

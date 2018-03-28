@@ -8,7 +8,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
+import android.os.Bundle
 import android.os.IBinder
+import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.view.View
 import android.widget.RemoteViews
 import ua.skachkov.temperature.myapplication.R
@@ -22,6 +24,8 @@ import ua.skachkov.temperature.myapplication.service.MeasurementsUpdatedBroadcas
 import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsService
 import javax.inject.Inject
 
+fun createAppWidgetRemoteViews(packageName: String?) = RemoteViews(packageName, R.layout.appwidget_layout)
+
 /**
  * @author Ivan Skachkov
  * Created on 3/13/2018.
@@ -29,6 +33,31 @@ import javax.inject.Inject
 class WeatherMeasurementsAppWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         context?.startService(Intent(context, UpdateWeatherMeasurementsWidgetService::class.java))
+        if (appWidgetManager != null && appWidgetIds != null) {
+            for (appWidgetId in appWidgetIds) {
+                val widgetOptions = appWidgetManager.getAppWidgetOptions(appWidgetIds[0])
+                onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, widgetOptions)
+            }
+        }
+    }
+
+    override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+        // Adjust measurements text size depending on the size of widget
+        if (context != null && appWidgetManager != null && newOptions != null) {
+            val minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+            val cellsCount = (minHeight + 30) / 70 // https://developer.android.com/guide/practices/ui_guidelines/widget_design.html#anatomy_determining_size
+
+            val textSize = when(cellsCount) {
+                2 -> 26
+                3 -> 42
+                in 4..Int.MAX_VALUE -> 54
+                else -> 22 // default text size for 1 cell height
+            }.toFloat()
+            val remoteViews = createAppWidgetRemoteViews(context.packageName)
+            remoteViews.setTextViewTextSize(R.id.temperature_text, COMPLEX_UNIT_SP, textSize)
+            remoteViews.setTextViewTextSize(R.id.humidity_text, COMPLEX_UNIT_SP, textSize)
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+        }
     }
 }
 
@@ -44,27 +73,41 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
 
     private val measurementsUpdateListener = MeasurementsUpdatedBroadcastReceiver(
             {
-                val views = createAppWidgetRemoteViews()
+                val views = createAppWidgetRemoteViews(packageName)
                 views.setViewVisibility(R.id.load_progressbar, View.VISIBLE)
                 views.setViewVisibility(R.id.refresh_button, View.GONE)
                 updateWidgets(views)
             },
             {
-                val remoteViews = createAppWidgetRemoteViews()
-                remoteViews.setViewVisibility(R.id.refresh_button, View.VISIBLE)
-                remoteViews.setViewVisibility(R.id.date_text, View.VISIBLE)
-                remoteViews.setTextViewText(R.id.date_text, it.syncDate)
-                remoteViews.setViewVisibility(R.id.load_progressbar, View.GONE)
+                val remoteViews = createAppWidgetRemoteViews(packageName)
+
+                // Measurements section
+                if (it.success) {
+                    // Show measurements
+                    remoteViews.setViewVisibility(R.id.error_message_text, View.GONE)
+                    remoteViews.setViewVisibility(R.id.measurements_fields, View.VISIBLE)
+                    remoteViews.setTextViewText(R.id.temperature_text, it.formattedTemperature)
+                    remoteViews.setTextViewText(R.id.humidity_text, it.humidity)
+                } else {
+                    // Show error message
+                    remoteViews.setViewVisibility(R.id.measurements_fields, View.GONE)
+                    remoteViews.setViewVisibility(R.id.error_message_text, View.VISIBLE)
+                    remoteViews.setTextViewText(R.id.error_message_text, it.statusMessage)
+                }
 
                 val intent = Intent(this, WeatherMeasurementsActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-                remoteViews.setOnClickPendingIntent(R.id.measurements_text, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.measurements_fields, pendingIntent)
 
-                remoteViews.setTextViewText(R.id.measurements_text, it.formattedWeatherMeasurementsOrStatusIfError)
+                // Sync date & refresh button
+                remoteViews.setViewVisibility(R.id.refresh_button, View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.load_progressbar, View.GONE)
+                remoteViews.setViewVisibility(R.id.sync_date_text, View.VISIBLE)
+                remoteViews.setTextViewText(R.id.sync_date_text, it.syncDate)
 
                 val refreshIntent = Intent(this, UpdateWeatherMeasurementsWidgetService::class.java)
                 val pendingRefreshIntent = PendingIntent.getService(this, 0, refreshIntent, 0)
-                remoteViews.setOnClickPendingIntent(R.id.refresh_button, pendingRefreshIntent)
+                remoteViews.setOnClickPendingIntent(R.id.sync_date_and_refresh_button_section, pendingRefreshIntent)
 
                 updateWidgets(remoteViews)
                 stopSelf()
@@ -80,8 +123,6 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
 
         return super.onStartCommand(intent, flags, startId)
     }
-
-    private fun createAppWidgetRemoteViews() = RemoteViews(packageName, R.layout.appwidget_layout)
 
     private fun updateWidgets(remoteViews: RemoteViews) {
         val thisWidget = ComponentName(this, WeatherMeasurementsAppWidgetProvider::class.java)

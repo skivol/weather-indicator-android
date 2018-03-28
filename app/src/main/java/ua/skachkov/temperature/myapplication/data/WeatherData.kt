@@ -14,12 +14,17 @@ const val OK_STATUS = "OK"
 @Parcelize
 data class WeatherData(
         private val temperature: String = "",
-        private val humidity: String = "",
+        val humidity: String = "",
         val syncDate: String,
         val statusMessage: String = OK_STATUS
 ) : Parcelable {
     @IgnoredOnParcel
-    private val formattedMeasurements = "t: $temperature°, Rh: $humidity"
+    val formattedTemperature = "$temperature°"
     @IgnoredOnParcel
-    val formattedWeatherMeasurementsOrStatusIfError: String = if (statusMessage == OK_STATUS) formattedMeasurements else statusMessage
+    private val formattedMeasurements = "t: $formattedTemperature, Rh: $humidity"
+
+    @IgnoredOnParcel
+    val success = statusMessage == OK_STATUS
+    @IgnoredOnParcel
+    val formattedWeatherMeasurementsOrStatusIfError: String = if (success) formattedMeasurements else statusMessage
 }

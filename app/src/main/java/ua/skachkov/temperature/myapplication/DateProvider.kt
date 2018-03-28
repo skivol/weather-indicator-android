@@ -11,6 +11,6 @@ import javax.inject.Singleton
  */
 @Singleton
 class DateProvider @Inject constructor() {
-    fun currentDateFormatted() = DateFormat.getDateTimeInstance().format(currentDate())
+    fun currentDateFormatted() = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentDate())
     fun currentDate() = Calendar.getInstance().time
 }
