@@ -86,7 +86,6 @@ class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<Weathe
 
             applyConstraintSet {
                 temperatureIcon {
-                    // TODO Check & update tests and docs/screenshots
                     // TODO Chaining doesn't seem to work defined manually here...
 //                    horizontalChainStyle = CHAIN_PACKED
 //                    horizontalBias = 0.5f

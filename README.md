@@ -1,13 +1,16 @@
-# Temperature indicator application for Android. Version 1
+# Temperature/humidity indicator application for Android. Version 2
 
 ## Purpose of the project
-1. Create a simple mobile client for home temperature indicator;
+1. Create a simple mobile client for home weather (temperature/humidity) indicator;
 2. Checkout new technologies/approaches for building Android applications (see "Technologies/libraries" section).
 
+## Screenshots
+[available here](https://github.com/vania92/weather-indicator-android/wiki)
+
 ## Functionality:
- * simple gui that, while active, periodically (once in a minute) reloads the data from network temperature indicator;
- * home screen widget that shows the temperature/date of loading and has a button for manual refresh;
- * settings screen with temperature url configuration and "about" section;
+ * simple gui that, while active, periodically (once in a minute, currently configurable) reloads the data from network temperature/humidity indicator;
+ * home screen widget that shows temperature & humidity along with the date of loading and has a button for manual refresh;
+ * settings screen with measurements url, update period configuration and "about" section;
  * English and Ukrainian translations;
  * couple of instrumentation tests with Espresso and MockWebServer.
 
