@@ -34,29 +34,31 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$compat_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     // Anko
-    compile "org.jetbrains.anko:anko:$anko_version"
-    compile "org.jetbrains.anko:anko-constraint-layout:$anko_version"
+    implementation "org.jetbrains.anko:anko:$anko_version"
+    implementation "org.jetbrains.anko:anko-constraint-layout:$anko_version"
     // Dagger 2
     // TODO checkout Koin https://github.com/Ekito/koin
-    compile "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     // OkHttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    androidTestCompile "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+    // Android Job
+    implementation "com.evernote:android-job:$android_job_version"
 
     // Tests
-    testCompile "junit:junit:$junit_version"
+    testImplementation "junit:junit:$junit_version"
     // Mockito framework
-//    androidTestCompile "org.mockito:mockito-android:$mockito_version"
+//    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
     // Test Dagger 2
-    androidTestCompile "com.google.dagger:dagger:$dagger_version"
+    androidTestImplementation "com.google.dagger:dagger:$dagger_version"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
 
-    androidTestCompile 'com.android.support:support-annotations:27.1.0'
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    androidTestCompile ("com.android.support.test.espresso:espresso-core:$espresso_version", {
+    androidTestImplementation 'com.android.support:support-annotations:27.1.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation ("com.android.support.test.espresso:espresso-core:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile "com.android.support.test.espresso:espresso-idling-resource:$espresso_version"
+    androidTestImplementation "com.android.support.test.espresso:espresso-idling-resource:$espresso_version"
 }

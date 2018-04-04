@@ -13,4 +13,6 @@
     <string name="pref_measurements_update_period_error">Повинен бути більше 5 секунд</string>
     <string name="thermometer_icon_content_description">Іконка градусника</string>
     <string name="humidity_icon_content_description">Іконка вологості</string>
+    <string name="notification_details_text">Працює для оновлення віджета при завантаженні нових даних. Натисніть, щоб зупинити.</string>
+    <string name="channel_description">Повідомлення про стан/для контролю додатку/віджета.</string>
 </resources>

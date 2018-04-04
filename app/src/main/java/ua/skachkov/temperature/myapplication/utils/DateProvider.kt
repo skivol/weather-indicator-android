@@ -1,4 +1,4 @@
-package ua.skachkov.temperature.myapplication
+package ua.skachkov.temperature.myapplication.utils
 
 import java.text.DateFormat
 import java.util.*

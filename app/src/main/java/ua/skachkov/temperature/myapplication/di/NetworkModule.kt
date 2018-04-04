@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
  * Created on 3/10/2018.
  */
 @Module
-open class NetworkModule() {
+class NetworkModule() {
     @Provides
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
             .build()

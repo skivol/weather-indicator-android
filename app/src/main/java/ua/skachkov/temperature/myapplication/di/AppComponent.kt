@@ -2,7 +2,7 @@ package ua.skachkov.temperature.myapplication.di
 
 import ua.skachkov.temperature.myapplication.App
 import ua.skachkov.temperature.myapplication.activity.WeatherMeasurementsActivity
-import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsService
+import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsJob
 import dagger.Component
 import ua.skachkov.temperature.myapplication.widget.UpdateWeatherMeasurementsWidgetService
 import javax.inject.Singleton
@@ -16,6 +16,6 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(app: App)
     fun inject(weatherMeasurementsActivity: WeatherMeasurementsActivity)
-    fun inject(updateWeatherMeasurementsService: UpdateWeatherMeasurementsService)
+    fun inject(updateWeatherMeasurementsJob: UpdateWeatherMeasurementsJob)
     fun inject(updateWeatherMeasurementsWidgetService: UpdateWeatherMeasurementsWidgetService)
 }

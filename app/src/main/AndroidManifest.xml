@@ -30,9 +30,6 @@
             android:parentActivityName=".preferences.SettingsActivity" />
 
         <service
-            android:name=".service.UpdateWeatherMeasurementsService"
-            android:exported="false" />
-        <service
             android:name=".widget.UpdateWeatherMeasurementsWidgetService"
             android:exported="false" />
 

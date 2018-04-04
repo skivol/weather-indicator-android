@@ -29,8 +29,8 @@ const val LOAD_INDICATOR_ID = 3
 const val SYNC_DATE_ID = 4
 
 const val DEFAULT_TEXT_SIZE = 36f
-const val DEFAULT_ICON_SIZE = 78
-const val DEFAULT_MARGIN_VALUE = 35
+const val DEFAULT_ICON_SIZE = 100
+const val DEFAULT_MARGIN_VALUE = 20
 
 @Singleton
 class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<WeatherMeasurementsActivity> {
