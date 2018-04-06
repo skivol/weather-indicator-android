@@ -10,7 +10,9 @@
     <string name="about_app_title">About this app</string>
     <string name="about_technologies_used">Technologies</string>
     <string name="refresh_button_text">Refresh</string>
-    <string name="notification_details_text">It\'s running to update the widget if new data loaded. Click to stop.</string>
+    <string name="notification_title">Weather widget service</string>
+    <string name="notification_details_text">Click to stop the service.</string>
+    <string name="notification_sub_text">It\'s running to update the widget if new data loaded.</string>
     <string name="channel_description">These are status/control notifications for weather measurements\' widget/app.</string>
     <string name="thermometer_icon_content_description">Thermometer icon</string>
     <string name="humidity_icon_content_description">Humidity icon</string>

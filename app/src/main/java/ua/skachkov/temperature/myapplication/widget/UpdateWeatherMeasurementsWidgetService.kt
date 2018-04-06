@@ -15,12 +15,11 @@ import ua.skachkov.temperature.myapplication.app
 import ua.skachkov.temperature.myapplication.di.ConfigModule
 import ua.skachkov.temperature.myapplication.service.MeasurementsUpdatedBroadcastReceiver
 import ua.skachkov.temperature.myapplication.service.UpdateWeatherMeasurementsJob
-import ua.skachkov.temperature.myapplication.utils.createWidgetForegroundOngoingNotification
-import ua.skachkov.temperature.myapplication.utils.registerMeasurementsLoadedBroadcastReceiver
-import ua.skachkov.temperature.myapplication.utils.unregisterLocalReceiver
+import ua.skachkov.temperature.myapplication.utils.*
 import javax.inject.Inject
 
 const val WEATHER_MEASUREMENTS_WIDGET_SERVICE_NOTIFICATION_ID = 1337
+
 class UpdateWeatherMeasurementsWidgetService : Service() {
     @Inject
     lateinit var configModule: ConfigModule
@@ -70,21 +69,25 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
                 remoteViews.setOnClickPendingIntent(R.id.sync_date_and_refresh_button_section, pendingRefreshIntent)
 
                 updateWidgets(remoteViews)
-                stopSelf()
             })
 
     override fun onCreate() {
         app.component.inject(this)
 
+        // Setup notification channel
+        setupNotificationChannel(this)
         // Show foreground notification
-        val foregroundNotification = createWidgetForegroundOngoingNotification(this)
+        val foregroundNotification = createWidgetForegroundNotification(this)
         startForeground(WEATHER_MEASUREMENTS_WIDGET_SERVICE_NOTIFICATION_ID, foregroundNotification)
 
         registerMeasurementsLoadedBroadcastReceiver(this, measurementsUpdateListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        UpdateWeatherMeasurementsJob.scheduleJob(configModule.provideConfigData().measurementsUrl)
+        when (intent?.action) {
+            WEATHER_MEASUREMENTS_WIDGET_SERVICE_STOP_ACTION -> stopSelf()
+            else -> UpdateWeatherMeasurementsJob.scheduleJob(configModule.provideConfigData().measurementsUrl)
+        }
         return START_NOT_STICKY
     }
 

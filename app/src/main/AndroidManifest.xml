@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ua.skachkov.temperature.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,10 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".preferences.SettingsActivity">
-           <intent-filter>
-               <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
-               <category android:name="android.intent.category.DEFAULT" />
-           </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".preferences.AboutActivity"
@@ -32,6 +33,13 @@
         <service
             android:name=".widget.UpdateWeatherMeasurementsWidgetService"
             android:exported="false" />
+
+        <!-- Avoiding the crush of PlatformGcmService init due to missing GCM dependencies -->
+        <!-- There is still some "ClassNotFoundException" in logs though... -->
+        <!-- https://github.com/evernote/android-job/wiki/FAQ#how-can-i-remove-the-gcm-dependency-from-my-app -->
+        <service
+            android:name="com.evernote.android.job.gcm.PlatformGcmService"
+            tools:node="remove" />
 
         <receiver android:name=".widget.WeatherMeasurementsAppWidgetProvider">
             <intent-filter>

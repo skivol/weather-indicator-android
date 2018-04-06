@@ -30,7 +30,7 @@ const val SYNC_DATE_ID = 4
 
 const val DEFAULT_TEXT_SIZE = 36f
 const val DEFAULT_ICON_SIZE = 100
-const val DEFAULT_MARGIN_VALUE = 20
+const val DEFAULT_MARGIN_VALUE = 10
 
 @Singleton
 class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<WeatherMeasurementsActivity> {
@@ -97,7 +97,7 @@ class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<Weathe
                     )
                 }
                 temperatureMessage {
-//                    horizontalBias = 0.5f
+                    //                    horizontalBias = 0.5f
                     connect(
                             TOP to TOP of temperatureIcon,
                             ConstraintSetBuilder.Side.START to ConstraintSetBuilder.Side.END of temperatureIcon,
@@ -105,7 +105,7 @@ class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<Weathe
                     )
                 }
                 humidityIcon {
-//                    horizontalBias = 0.5f
+                    //                    horizontalBias = 0.5f
                     connect(
                             TOP to TOP of temperatureMessage,
                             ConstraintSetBuilder.Side.START to ConstraintSetBuilder.Side.END of temperatureMessage,
@@ -113,7 +113,7 @@ class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<Weathe
                     )
                 }
                 humidityMessage {
-//                    horizontalBias = 0.5f
+                    //                    horizontalBias = 0.5f
                     connect(
                             TOP to TOP of humidityIcon,
                             ConstraintSetBuilder.Side.START to ConstraintSetBuilder.Side.END of humidityIcon,
@@ -151,42 +151,38 @@ class WeatherMeasurementsActivityUI @Inject constructor() : AnkoComponent<Weathe
     }
 
     fun onMeasurementsStartedLoading() {
-        ankoContext.doAsync {
-            activityUiThread {
-                loadIndicator.visibility = VISIBLE
-            }
+        ankoContext.owner.runOnUiThread {
+            loadIndicator.visibility = VISIBLE
         }
     }
 
     fun onMeasurementsLoaded(weatherData: WeatherData) {
-        ankoContext.doAsync {
-            activityUiThread {
-                // Measurements
-                if (weatherData.success) {
-                    errorMessage.visibility = GONE
+        ankoContext.owner.runOnUiThread {
+            // Measurements
+            if (weatherData.success) {
+                errorMessage.visibility = GONE
 
-                    temperatureMessage.text = weatherData.formattedTemperature
-                    temperatureMessage.visibility = VISIBLE
-                    temperatureIcon.visibility = VISIBLE
+                temperatureMessage.text = weatherData.formattedTemperature
+                temperatureMessage.visibility = VISIBLE
+                temperatureIcon.visibility = VISIBLE
 
-                    humidityMessage.text = weatherData.humidity
-                    humidityMessage.visibility = VISIBLE
-                    humidityIcon.visibility = VISIBLE
-                } else {
-                    errorMessage.text = weatherData.statusMessage
-                    errorMessage.visibility = VISIBLE
+                humidityMessage.text = weatherData.humidity
+                humidityMessage.visibility = VISIBLE
+                humidityIcon.visibility = VISIBLE
+            } else {
+                errorMessage.text = weatherData.statusMessage
+                errorMessage.visibility = VISIBLE
 
-                    temperatureMessage.visibility = GONE
-                    temperatureIcon.visibility = GONE
-                    humidityMessage.visibility = GONE
-                    humidityIcon.visibility = GONE
-                }
-
-                // Sync date
-                loadDate.text = weatherData.syncDate
-                loadDate.visibility = VISIBLE
-                loadIndicator.visibility = GONE
+                temperatureMessage.visibility = GONE
+                temperatureIcon.visibility = GONE
+                humidityMessage.visibility = GONE
+                humidityIcon.visibility = GONE
             }
+
+            // Sync date
+            loadDate.text = weatherData.syncDate
+            loadDate.visibility = VISIBLE
+            loadIndicator.visibility = GONE
         }
     }
 }
