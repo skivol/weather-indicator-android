@@ -57,6 +57,7 @@ class UpdateWeatherMeasurementsWidgetService : Service() {
                 val intent = Intent(this, WeatherMeasurementsActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
                 remoteViews.setOnClickPendingIntent(R.id.measurements_fields, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.error_message_text, pendingIntent)
 
                 // Sync date & refresh button
                 remoteViews.setViewVisibility(R.id.refresh_button, View.VISIBLE)

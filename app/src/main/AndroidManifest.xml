@@ -34,13 +34,6 @@
             android:name=".widget.UpdateWeatherMeasurementsWidgetService"
             android:exported="false" />
 
-        <!-- Avoiding the crush of PlatformGcmService init due to missing GCM dependencies -->
-        <!-- There is still some "ClassNotFoundException" in logs though... -->
-        <!-- https://github.com/evernote/android-job/wiki/FAQ#how-can-i-remove-the-gcm-dependency-from-my-app -->
-        <service
-            android:name="com.evernote.android.job.gcm.PlatformGcmService"
-            tools:node="remove" />
-
         <receiver android:name=".widget.WeatherMeasurementsAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

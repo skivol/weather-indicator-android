@@ -45,6 +45,8 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
     // Android Job
     implementation "com.evernote:android-job:$android_job_version"
+    // GCM dependency is added here to avoid crashes of Android Job... (disabling the service didn't seem to have desired effect)
+    implementation "com.google.android.gms:play-services-gcm:$play_services_gcm_version"
 
     // Tests
     testImplementation "junit:junit:$junit_version"
