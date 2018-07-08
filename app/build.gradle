@@ -29,10 +29,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Kotlin
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Android
     implementation "com.android.support:appcompat-v7:$compat_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
+    // Explicitly specify newest versions to avoid transitive dragging in some older ones
+    implementation "com.android.support:recyclerview-v7:$compat_version"
+    implementation "com.android.support:support-media-compat:$compat_version"
+    implementation "com.android.support:support-v4:$compat_version"
+    // finish of explicit versions specification
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-alpha1'
     // Anko
     implementation "org.jetbrains.anko:anko:$anko_version"
     implementation "org.jetbrains.anko:anko-constraint-layout:$anko_version"
@@ -56,9 +61,9 @@ dependencies {
     androidTestImplementation "com.google.dagger:dagger:$dagger_version"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
 
-    androidTestImplementation 'com.android.support:support-annotations:27.1.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation ("com.android.support.test.espresso:espresso-core:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
