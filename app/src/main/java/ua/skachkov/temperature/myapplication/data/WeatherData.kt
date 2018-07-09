@@ -13,7 +13,7 @@ const val OK_STATUS = "OK"
  */
 @Parcelize
 data class WeatherData(
-        private val temperature: String = "",
+        val temperature: String = "",
         val humidity: String = "",
         val syncDate: String,
         val statusMessage: String = OK_STATUS

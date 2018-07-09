@@ -10,6 +10,7 @@ import ua.skachkov.temperature.myapplication.constants.MEASUREMENTS_URL_EXTRA
 import ua.skachkov.temperature.myapplication.data.WeatherData
 import ua.skachkov.temperature.myapplication.network.MeasurementsDataLoadException
 import ua.skachkov.temperature.myapplication.network.NetworkMeasurementsLoader
+import ua.skachkov.temperature.myapplication.storage.updateSuccessfulMeasurementsDataLoaded
 import ua.skachkov.temperature.myapplication.utils.DateProvider
 import ua.skachkov.temperature.myapplication.utils.sendMeasurementsLoadedBroadcast
 import ua.skachkov.temperature.myapplication.utils.sendMeasurementsStartedLoadingBroadcast
@@ -30,13 +31,13 @@ class UpdateWeatherMeasurementsJob : Job() {
             is App -> (context as App).component.inject(this)
             else -> return Result.FAILURE
         }
-        // TODO cache values
         val measurementsUrl = params.extras.getString(MEASUREMENTS_URL_EXTRA, null)
                 ?: return Result.FAILURE
 
         sendMeasurementsStartedLoadingBroadcast(context)
-        val temperatureData = loadWeatherData(measurementsUrl, networkMeasurementsLoader, dateProvider)
-        sendMeasurementsLoadedBroadcast(context, temperatureData)
+        val measurementsData = loadWeatherData(measurementsUrl, networkMeasurementsLoader, dateProvider)
+        updateSuccessfulMeasurementsDataLoaded(context, measurementsData)
+        sendMeasurementsLoadedBroadcast(context, measurementsData)
 
         return Result.SUCCESS
     }
